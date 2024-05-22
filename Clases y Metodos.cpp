@@ -1,96 +1,154 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
-// Clase Personaje
-class Personaje {
+// Clase Plato
+class Plato {
 private:
-    string name;
-    int health;
-    int attack;
+    string nombre;
+    double precio;
+    int calorias;
 
 public:
     // Constructor
-    Personaje(string _name, int _health, int _attack) {
-        name = _name;
-        health = _health;
-        attack = _attack;
+    Plato(string _nombre, double _precio, int _calorias)
+        : nombre(_nombre), precio(_precio), calorias(_calorias) {}
+
+    // M√©todos para obtener los atributos del plato
+    string obtenerNombre() const {
+        return nombre;
     }
 
-    // MÈtodo para obtener el nombre del personaje
-    string obtenerNombre() {
-        return name;
+    double obtenerPrecio() const {
+        return precio;
     }
 
-    // MÈtodo para obtener la salud del personaje
-    int obtenerSalud() {
-        return health;
+    int obtenerCalorias() const {
+        return calorias;
     }
 
-    // MÈtodo para recibir daÒo
-    void recibirDanio(int cantidad) {
-        health -= cantidad;
-        if (health < 0) {
-            health = 0;
-        }
+    // M√©todos para establecer los atributos del plato
+    void establecerNombre(const string& _nombre) {
+        nombre = _nombre;
     }
 
-    // MÈtodo para atacar a otro personaje
-    void atacar(Personaje &objetivo) {
-        cout << name << " ataca a " << objetivo.obtenerNombre() << " y causa " << attack << " de danio." << endl;
-        objetivo.recibirDanio(attack);
+    void establecerPrecio(double _precio) {
+        precio = _precio;
     }
 
-    // MÈtodo para mostrar el estado del personaje
-    void mostrarEstado() {
-        cout << name << " - Salud: " << health << ", Ataque: " << attack << endl;
+    void establecerCalorias(int _calorias) {
+        calorias = _calorias;
+    }
+
+    // M√©todo para mostrar el estado del plato
+    void mostrarEstado() const {
+        cout << "Nombre: " << nombre << " - Precio: $" << precio << " - Calorias: " << calorias << " cal" << endl;
     }
 };
 
-// FunciÛn principal
+// Clase Restaurante
+class Restaurante {
+private:
+    vector<Plato> menu;
+
+public:
+    // M√©todo para agregar un plato al men√∫
+    void agregarPlato(const Plato& plato) {
+        menu.push_back(plato);
+    }
+
+    // M√©todo para mostrar el men√∫ completo
+    void mostrarMenu() const {
+        cout << "Menu del Restaurante:" << endl;
+        for (const auto& plato : menu) {
+            plato.mostrarEstado();
+        }
+    }
+
+    // M√©todo para actualizar un plato del men√∫
+    void actualizarPlato(const string& nombre) {
+        for (auto& plato : menu) {
+            if (plato.obtenerNombre() == nombre) {
+                string nuevoNombre;
+                double nuevoPrecio;
+                int nuevasCalorias;
+
+                cout << "Ingrese el nuevo nombre del plato: ";
+                cin.ignore();
+                getline(cin, nuevoNombre);
+                cout << "Ingrese el nuevo precio del plato: ";
+                cin >> nuevoPrecio;
+                cout << "Ingrese las nuevas calor√≠as del plato: ";
+                cin >> nuevasCalorias;
+
+                plato.establecerNombre(nuevoNombre);
+                plato.establecerPrecio(nuevoPrecio);
+                plato.establecerCalorias(nuevasCalorias);
+
+                cout << "Plato actualizado exitosamente." << endl;
+                return;
+            }
+        }
+        cout << "Plato no encontrado en el menu." << endl;
+    }
+};
+
+// Funci√≥n principal
 int main() {
-    string name;
-    int health, attack;
+    Restaurante restaurante;
+    int opcion;
 
-    // Ingresar caracterÌsticas del hÈroe
-    cout << "Ingrese el nombre del heroe: ";
-    getline(cin, name);
-    cout << "Ingrese la salud del heroe: ";
-    cin >> health;
-    cout << "Ingrese el ataque del heroe: ";
-    cin >> attack;
-    Personaje heroe(name, health, attack);
+    do {
+        cout << "------------------------------MENu DE OPCIONES------------------------------\n";
+        cout << "1 - Agregar un plato" << endl;
+        cout << "2 - Mostrar el menu completo" << endl;
+        cout << "3 - Actualizar un plato" << endl;
+        cout << "4 - Salir" << endl;
+        cout << "----------------------------------------------------------------------------\n";
+        cout << "Ingrese su opcion: ";
+        cin >> opcion;
 
-    // Limpiar el buffer de entrada
-    cin.ignore();
-    
-    cout << "\n-------------------------------" << endl;
+        switch (opcion) {
+            case 1: {
+                string nombre;
+                double precio;
+                int calorias;
 
-    // Ingresar caracterÌsticas del enemigo
-    cout << "Ingrese el nombre del enemigo: ";
-    getline(cin, name);
-    cout << "Ingrese la salud del enemigo: ";
-    cin >> health;
-    cout << "Ingrese el ataque del enemigo: ";
-    cin >> attack;
-    Personaje enemigo(name, health, attack);
-    
-    cout << "\n----------------------------------------" << endl;
+                cout << "Ingrese el nombre del plato: ";
+                cin.ignore();
+                getline(cin, nombre);
+                cout << "Ingrese el precio del plato: ";
+                cin >> precio;
+                cout << "Ingrese las calorias del plato: ";
+                cin >> calorias;
 
-    // Mostrar el estado inicial de los personajes
-    cout << "\nEstado inicial:" << endl;
-    heroe.mostrarEstado();
-    enemigo.mostrarEstado();
+                Plato nuevoPlato(nombre, precio, calorias);
+                restaurante.agregarPlato(nuevoPlato);
+                cout << "Plato agregado exitosamente." << endl;
+                break;
+            }
+            case 2:
+                restaurante.mostrarMenu();
+                break;
+            case 3: {
+                string nombre;
 
-    // SimulaciÛn de combate
-    cout << "\nCombate:" << endl;
-    heroe.atacar(enemigo);
-    enemigo.atacar(heroe);
-    heroe.atacar(enemigo);
+                cout << "Ingrese el nombre del plato a actualizar: ";
+                cin.ignore();
+                getline(cin, nombre);
 
-    // Mostrar el estado final de los personajes
-    cout << "\nEstado final:" << endl;
-    heroe.mostrarEstado();
-    enemigo.mostrarEstado();
+                restaurante.actualizarPlato(nombre);
+                break;
+            }
+            case 4:
+                cout << "Saliendo del programa..." << endl;
+                break;
+            default:
+                cout << "Opcion no valida. Intente de nuevo." << endl;
+        }
+    } while (opcion != 4);
+
+    return 0;
 }
