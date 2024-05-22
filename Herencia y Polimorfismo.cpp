@@ -1,72 +1,77 @@
 #include <iostream>
+#include <string>
+#include <vector>
 
-using namespace std;
+class Empleado {
+protected:
+    std::string nombre;
+    double salario;
 
-// Clase base Figura
-class Figura {
 public:
-    virtual double calcularArea() const = 0; // MÈtodo virtual puro para calcular el ·rea
+    Empleado(const std::string& nombre, double salario)
+        : nombre(nombre), salario(salario) {}
+
+    virtual void describirTrabajo() const = 0; // M√©todo virtual puro
+
+    void mostrarInformacion() const {
+        std::cout << "Nombre: " << nombre << std::endl;
+        std::cout << "Salario: " << salario << std::endl;
+    }
+
+    virtual ~Empleado() {}
 };
 
-// Clase derivada Rectangulo
-class Rectangulo : public Figura {
+class Cocinero : public Empleado {
 private:
-    double base;
-    double altura;
+    std::string especialidad;
 
 public:
-    Rectangulo(double b, double h) : base(b), altura(h) {}
+    Cocinero(const std::string& nombre, double salario, const std::string& especialidad)
+        : Empleado(nombre, salario), especialidad(especialidad) {}
 
-    double calcularArea() const override {
-        return base * altura;
+    void describirTrabajo() const {
+        std::cout << "Soy un cocinero especializado en " << especialidad << ".\n";
     }
 };
 
-// Clase derivada Triangulo
-class Triangulo : public Figura {
+class Camarero : public Empleado {
 private:
-    double base;
-    double altura;
+    std::string seccion;
 
 public:
-    Triangulo(double b, double h) : base(b), altura(h) {}
+    Camarero(const std::string& nombre, double salario, const std::string& seccion)
+        : Empleado(nombre, salario), seccion(seccion) {}
 
-    double calcularArea() const override {
-        return (base * altura) / 2.0;
+    void describirTrabajo() const {
+        std::cout << "Soy un camarero y trabajo en la seccion " << seccion << ".\n";
+    }
+};
+
+class Gerente : public Empleado {
+public:
+    Gerente(const std::string& nombre, double salario)
+        : Empleado(nombre, salario) {}
+
+    void describirTrabajo() const {
+        std::cout << "Soy el gerente del restaurante.\n";
     }
 };
 
 int main() {
-    char opcion;
-    double base, altura;
+    std::vector<Empleado*> empleados;
+    empleados.push_back(new Cocinero("Juan", 3000, "postres"));
+    empleados.push_back(new Camarero("Pedro", 2000, "exterior"));
+    empleados.push_back(new Gerente("Mar√≠a", 5000));
 
-    cout << "Seleccione la figura:" << endl;
-    cout << "R - Rectangulo" << endl;
-    cout << "T - Triangulo" << endl;
-    cin >> opcion;
+    for (std::vector<Empleado*>::iterator it = empleados.begin(); it != empleados.end(); ++it) {
+        (*it)->mostrarInformacion();
+        (*it)->describirTrabajo();
+        std::cout << std::endl;
+    }
 
-    if (opcion == 'R' || opcion == 'r') {
-        cout << "Ingrese la base del rectangulo: ";
-        cin >> base;
-        cout << "Ingrese la altura del rectangulo: ";
-        cin >> altura;
-
-        Figura* figura = new Rectangulo(base, altura);
-        cout << "Area del Rectangulo: " << figura->calcularArea() << endl;
-        delete figura;
-    } else if (opcion == 'T' || opcion == 't') {
-        cout << "Ingrese la base del triangulo: ";
-        cin >> base;
-        cout << "Ingrese la altura del triangulo: ";
-        cin >> altura;
-
-        Figura* figura = new Triangulo(base, altura);
-        cout << "Area del Triangulo: " << figura->calcularArea() << endl;
-        delete figura;
-    } else {
-        cout << "Opcion invalida." << endl;
+    for (std::vector<Empleado*>::iterator it = empleados.begin(); it != empleados.end(); ++it) {
+        delete *it;
     }
 
     return 0;
 }
-
