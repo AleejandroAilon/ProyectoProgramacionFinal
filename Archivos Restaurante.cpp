@@ -1,4 +1,4 @@
-//Proyecto Final Algoritmos Dylan Reyes | 03/11/2023
+//ARCHIVOS RESTAURANTE
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -73,7 +73,7 @@ void listado() {
         numeroPlatillo++;
     }
     arch.close();
-    // Preguntar al usuario si desea guardar la información en un archivo de texto
+    // Preguntar al usuario si desea guardar la informaciÃ³n en un archivo de texto
     string respuesta;
     cout << "Desea guardar esta informacion en un archivo de texto? (s/n): ";
     cin >> respuesta;
