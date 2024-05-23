@@ -1,79 +1,88 @@
 #include <iostream>
-#include <complex>
+#include <string>
+#include <vector>
 using namespace std;
 
-complex<double> crearComplejo(double real, double imaginario) {
-    complex<double> numeroComplejo(real, imaginario);
-    return numeroComplejo;
-}
+// Estructura para almacenar los elementos del menú
+struct MenuItem {
+    string nombre;
+    double precio;
+};
 
-complex<double> sumarComplejos(complex<double> c1, complex<double> c2) {
-    return c1 + c2;
-}
-
-complex<double> restarComplejos(complex<double> c1, complex<double> c2) {
-    return c1 - c2;
-}
-
-complex<double> multiplicarComplejos(complex<double> c1, complex<double> c2) {
-    return c1 * c2;
-}
-
-complex<double> dividirComplejos(complex<double> c1, complex<double> c2) {
-    return c1 / c2;
-}
-
-void mostrarComplejo(complex<double> numeroComplejo) {
-    cout << "Resultado: " << numeroComplejo << endl;
-}
-
-void solicitarDatos(double &real, double &imaginario, const string &descripcion) {
-    cout << "Ingrese la parte real de " << descripcion << ": ";
-    cin >> real;
-    cout << "Ingrese la parte imaginaria de " << descripcion << ": ";
-    cin >> imaginario;
-}
+// Declaración de funciones
+void mostrarMenu(const vector<MenuItem>& menu);
+void agregarPedido(vector<MenuItem>& pedidos, const vector<MenuItem>& menu, int indice);
+double calcularTotal(const vector<MenuItem>& pedidos);
 
 int main() {
-    double real1, imag1, real2, imag2;
-    solicitarDatos(real1, imag1, "c1");
-    solicitarDatos(real2, imag2, "c2");
+    // Inicialización del menú del restaurante
+    vector<MenuItem> menu = {
+        {"Pizza", 8.99},
+        {"Hamburguesa", 5.49},
+        {"Pasta", 7.99},
+        {"Ensalada", 4.99},
+        {"Soda", 1.99}
+    };
 
-    complex<double> c1 = crearComplejo(real1, imag1);
-    complex<double> c2 = crearComplejo(real2, imag2);
-
-    cout << "Seleccione la operaci�n a realizar: " << endl;
-    cout << "1. Sumar" << endl;
-    cout << "2. Restar" << endl;
-    cout << "3. Multiplicar" << endl;
-    cout << "4. Dividir" << endl;
-
+    vector<MenuItem> pedidos;
     int opcion;
-    cin >> opcion;
 
-    complex<double> resultado;
+    do {
+        cout << "\nBienvenido al Restaurante\n";
+        cout << "1. Mostrar Menu\n";
+        cout << "2. Agregar Pedido\n";
+        cout << "3. Calcular Total\n";
+        cout << "4. Salir\n";
+        cout << "Seleccione una opción: ";
+        cin >> opcion;
 
-    switch(opcion) {
-        case 1:
-            resultado = sumarComplejos(c1, c2);
-            mostrarComplejo(resultado);
-            break;
-        case 2:
-            resultado = restarComplejos(c1, c2);
-            mostrarComplejo(resultado);
-            break;
-        case 3:
-            resultado = multiplicarComplejos(c1, c2);
-            mostrarComplejo(resultado);
-            break;
-        case 4:
-            resultado = dividirComplejos(c1, c2);
-            mostrarComplejo(resultado);
-            break;
-        default:
-            cout << "Opcion no valida" << endl;
-    }
+        switch(opcion) {
+            case 1:
+                mostrarMenu(menu);
+                break;
+            case 2: {
+                int indice;
+                mostrarMenu(menu);
+                cout << "Ingrese el número del ítem que desea agregar al pedido: ";
+                cin >> indice;
+                if (indice > 0 && indice <= menu.size()) {
+                    agregarPedido(pedidos, menu, indice - 1);
+                } else {
+                    cout << "Ítem inválido.\n";
+                }
+                break;
+            }
+            case 3:
+                cout << "El total de su cuenta es: $" << calcularTotal(pedidos) << endl;
+                break;
+            case 4:
+                cout << "Gracias por visitar nuestro restaurante.\n";
+                break;
+            default:
+                cout << "Opción inválida. Inténtelo de nuevo.\n";
+        }
+    } while(opcion != 4);
 
     return 0;
 }
 
+// Definición de funciones
+void mostrarMenu(const vector<MenuItem>& menu) {
+    cout << "\nMenu del Restaurante:\n";
+    for (size_t i = 0; i < menu.size(); ++i) {
+        cout << i + 1 << ". " << menu[i].nombre << " - $" << menu[i].precio << endl;
+    }
+}
+
+void agregarPedido(vector<MenuItem>& pedidos, const vector<MenuItem>& menu, int indice) {
+    pedidos.push_back(menu[indice]);
+    cout << menu[indice].nombre << " ha sido agregado a su pedido.\n";
+}
+
+double calcularTotal(const vector<MenuItem>& pedidos) {
+    double total = 0.0;
+    for (const auto& item : pedidos) {
+        total += item.precio;
+    }
+    return total;
+}
